@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    volumes:
+      - ./backend:/app  # Mount the backend code as a volume
+    ports:
+      - "8000:8000"  # Map the backend port
+    depends_on:
+      - db  # Ensure the database starts first
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/app_db
+      - SECRET_KEY=your-secret-key  # Replace with a secure key
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+  db:
+    image: postgres:14
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: app_db
+    ports:
+      - "5432:5432"  # Expose PostgreSQL port
+
+#volumes:
+#  postgres_data:  # Persistent volume for database

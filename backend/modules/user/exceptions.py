@@ -1,0 +1,2 @@
+class PasswordsDoNotMatchException(Exception):
+    pass
